@@ -1,119 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For You, Sweetheart</title>
-    <style>
-        :root {
-            --primary-pink: #ff75a0;
-            --deep-purple: #2d132c;
-            --soft-white: #fceef5;
-            --gold: #ffd700;
-        }
-
-        body {
-            margin: 0;
-            background: radial-gradient(circle, var(--deep-purple) 0%, #000 100%);
-            color: var(--soft-white);
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            text-align: center;
-        }
-
-        #gift-stage {
-            cursor: pointer;
-            transition: transform 0.3s;
-            z-index: 10;
-        }
-
-        #gift-stage:hover { transform: scale(1.05); }
-
-        .box {
-            width: 120px;
-            height: 120px;
-            background: var(--primary-pink);
-            position: relative;
-            margin: 20px auto;
-            border-radius: 8px;
-            box-shadow: 0 0 30px rgba(255, 117, 160, 0.4);
-            animation: bounce 1.5s infinite;
-        }
-
-        .box::before {
-            content: '';
-            position: absolute;
-            width: 20px; height: 100%;
-            background: var(--gold);
-            left: 50%; transform: translateX(-50%);
-        }
-
-        #main-content {
-            display: none;
-            max-width: 90%;
-            z-index: 10;
-        }
-
-        h1 {
-            font-size: clamp(2.5rem, 10vw, 5rem);
-            margin: 0;
-            background: linear-gradient(to right, #ff75a0, #fceef5, #ff75a0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 10px rgba(255,117,160,0.5));
-        }
-
-        .sweetheart-line {
-            font-size: 1.8rem;
-            font-style: italic;
-            margin: 15px 0;
-            color: var(--soft-white);
-        }
-
-        .heart {
-            color: var(--primary-pink);
-            display: inline-block;
-            animation: heartBeat 1.2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-
-        @keyframes heartBeat {
-            0% { transform: scale(1); }
-            15% { transform: scale(1.3); }
-            30% { transform: scale(1); }
-            60% { transform: scale(1); }
-        }
-
-        .btn-celebrate {
-            background: transparent;
-            border: 2px solid var(--primary-pink);
-            color: var(--primary-pink);
-            padding: 12px 25px;
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: 0.3s;
-        }
-    </style>
-</head>
 <body>
 
-    <audio id="bday-music" loop>
-       <source src="https://www.chosic.com/wp-content/uploads/2021/04/Happy-Birthday-To-You-Standard-Instrumental.mp3" type="audio/mpeg">
-    </audio>
+    <div id="player" style="position:absolute; top:-9999px; left:-9999px;"></div>
 
     <div id="gift-stage" onclick="openSurprise()">
         <div class="box"></div>
-        <p style="letter-spacing: 2px;">TAP TO OPEN YOUR GIFT</p>
+        <p style="letter-spacing: 2px; color: #ff75a0;">TAP TO OPEN YOUR GIFT</p>
     </div>
 
     <div id="main-content">
@@ -125,38 +16,48 @@
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script>
+        // Load YouTube API
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '0',
+                width: '0',
+                videoId: '9K_v5V8zH_M', // This is a soft Happy Birthday Lo-fi track
+                events: {
+                    'onReady': onPlayerReady
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            // Player is ready but won't play until click
+        }
+
         function openSurprise() {
-            // Start Music
-            const music = document.getElementById('bday-music');
-            music.play().catch(e => console.log("Audio play blocked until interaction"));
+            // Start YouTube Audio
+            if (player && player.playVideo) {
+                player.playVideo();
+            }
 
             document.getElementById('gift-stage').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
             
-            // Initial Explosion
+            // Confetti Cannon
             confetti({
                 particleCount: 150,
                 spread: 70,
                 origin: { y: 0.6 },
                 colors: ['#ff75a0', '#ffd700', '#ffffff']
             });
-
-            // Side cannons
-            var end = Date.now() + (3 * 1000);
-            (function frame() {
-              confetti({ particleCount: 2, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff75a0', '#ffd700'] });
-              confetti({ particleCount: 2, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff75a0', '#ffd700'] });
-              if (Date.now() < end) { requestAnimationFrame(frame); }
-            }());
         }
 
         function extraConfetti() {
-            confetti({
-                particleCount: 80,
-                spread: 100,
-                origin: { y: 0.6 }
-            });
+            confetti({ particleCount: 80, spread: 100, origin: { y: 0.6 } });
         }
     </script>
 </body>
-</html>
