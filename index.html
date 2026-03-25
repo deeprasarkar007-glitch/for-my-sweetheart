@@ -32,8 +32,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* The Box Styling */
-        #gift-stage { cursor: pointer; transition: transform 0.3s; }
+        #gift-stage { cursor: pointer; transition: transform 0.3s; z-index: 20; }
         #gift-stage:hover { transform: scale(1.1); }
 
         .box {
@@ -51,12 +50,10 @@
             width: 30px; height: 100%;
             background: var(--gold); left: 50%;
             transform: translateX(-50%);
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
         }
 
-        #main-content { display: none; padding: 20px; }
+        #main-content { display: none; padding: 20px; z-index: 10; }
 
-        /* Text Effects */
         h1 {
             font-size: clamp(2.5rem, 10vw, 4.5rem);
             background: linear-gradient(to right, #fff, var(--pink), var(--gold));
@@ -64,21 +61,18 @@
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 0 20px rgba(255,117,160,0.4));
             margin: 0;
-            letter-spacing: 2px;
         }
 
         .sweetheart-line {
             font-size: 1.8rem;
             margin: 20px 0;
             font-style: italic;
-            text-shadow: 0 0 10px rgba(255,255,255,0.5);
             animation: pulse 2s infinite;
         }
 
-        /* Floating Hearts Container */
         .heart-float {
             position: absolute;
-            font-size: 20px;
+            font-size: 25px;
             color: var(--pink);
             user-select: none;
             pointer-events: none;
@@ -88,7 +82,7 @@
 
         @keyframes floatUp {
             0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
         }
 
         @keyframes bounce {
@@ -131,13 +125,13 @@
         <h1>HAPPY BIRTHDAY!</h1>
         <div class="sweetheart-line">Happy Birthday, Sweetheart ❤️</div>
         <p style="letter-spacing: 1px; opacity: 0.9;">You deserve all the magic in the world.</p>
-        <button class="btn-celebrate" onclick="partyMode()">MORE MAGIC ✨</button>
+        <button class="btn-celebrate" onclick="onlyMagic()">MORE MAGIC ✨</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
+        
         const notes = [
             {f: 261.6, d: 0.4}, {f: 261.6, d: 0.2}, {f: 293.7, d: 0.6}, {f: 261.6, d: 0.6}, {f: 349.2, d: 0.6}, {f: 329.6, d: 1.2},
             {f: 261.6, d: 0.4}, {f: 261.6, d: 0.2}, {f: 293.7, d: 0.6}, {f: 261.6, d: 0.6}, {f: 392.0, d: 0.6}, {f: 349.2, d: 1.2},
@@ -158,7 +152,7 @@
             osc.stop(startTime + duration);
         }
 
-        function playMusic() {
+        function playMusicOnce() {
             let time = audioCtx.currentTime;
             notes.forEach(n => {
                 playNote(n.f, n.d, time);
@@ -172,28 +166,38 @@
             heart.className = 'heart-float';
             heart.style.left = Math.random() * 100 + 'vw';
             heart.style.bottom = '-5vh';
-            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            heart.style.animationDuration = (Math.random() * 2 + 2) + 's';
             document.body.appendChild(heart);
             setTimeout(() => heart.remove(), 4000);
         }
 
-        function partyMode() {
-            playMusic();
+        // This function handles the visual excitement WITHOUT restarting the music
+        function onlyMagic() {
             confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#ff75a0', '#ffd700', '#ffffff']
+                particleCount: 100,
+                spread: 90,
+                origin: { y: 0.7 },
+                colors: ['#ff75a0', '#ffd700', '#ffffff', '#ff4d4d']
             });
-            for(let i=0; i<15; i++) setTimeout(spawnHeart, i*100);
+            // Spawn a burst of hearts
+            for(let i=0; i<10; i++) {
+                setTimeout(spawnHeart, i * 150);
+            }
         }
 
         function openSurprise() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
             document.getElementById('gift-stage').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
-            partyMode();
-            setInterval(spawnHeart, 1000); // Constant gentle floating hearts
+            
+            // Play music only once here
+            playMusicOnce();
+            
+            // Initial celebration
+            onlyMagic();
+            
+            // Keep a gentle flow of hearts going
+            setInterval(spawnHeart, 2500);
         }
     </script>
 </body>
