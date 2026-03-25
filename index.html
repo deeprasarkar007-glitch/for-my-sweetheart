@@ -5,46 +5,152 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For My Sweetheart</title>
     <style>
-        body { margin: 0; background: #1a1a2e; color: white; font-family: 'Arial', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; overflow: hidden; }
-        #gift-stage { cursor: pointer; }
-        .box { width: 140px; height: 140px; background: #ff7597; margin: 20px auto; border-radius: 10px; position: relative; box-shadow: 0 0 40px rgba(255, 117, 151, 0.6); animation: bounce 1.5s infinite; }
-        .box::after { content: ''; position: absolute; width: 25px; height: 100%; background: #ffd700; left: 50%; transform: translateX(-50%); }
-        #main-content { display: none; }
-        h1 { font-size: 3rem; color: #ff7597; text-shadow: 0 0 15px rgba(255, 117, 151, 0.5); margin: 10px 0; }
-        .sweetheart-line { font-size: 1.8rem; margin: 15px 0; font-style: italic; color: #fceef5; }
-        .btn-celebrate { background: #ff7597; border: none; color: white; padding: 12px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        :root {
+            --pink: #ff75a0;
+            --gold: #ffd700;
+            --dark: #0f0c29;
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: white;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* The Box Styling */
+        #gift-stage { cursor: pointer; transition: transform 0.3s; }
+        #gift-stage:hover { transform: scale(1.1); }
+
+        .box {
+            width: 140px; height: 140px;
+            background: var(--pink);
+            margin: 20px auto;
+            border-radius: 15px;
+            position: relative;
+            box-shadow: 0 0 50px rgba(255, 117, 160, 0.6);
+            animation: bounce 2s infinite cubic-bezier(0.28, 0.84, 0.42, 1);
+        }
+
+        .box::after {
+            content: ''; position: absolute;
+            width: 30px; height: 100%;
+            background: var(--gold); left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        #main-content { display: none; padding: 20px; }
+
+        /* Text Effects */
+        h1 {
+            font-size: clamp(2.5rem, 10vw, 4.5rem);
+            background: linear-gradient(to right, #fff, var(--pink), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(255,117,160,0.4));
+            margin: 0;
+            letter-spacing: 2px;
+        }
+
+        .sweetheart-line {
+            font-size: 1.8rem;
+            margin: 20px 0;
+            font-style: italic;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+            animation: pulse 2s infinite;
+        }
+
+        /* Floating Hearts Container */
+        .heart-float {
+            position: absolute;
+            font-size: 20px;
+            color: var(--pink);
+            user-select: none;
+            pointer-events: none;
+            animation: floatUp 4s linear forwards;
+            z-index: 5;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-40px);}
+            60% {transform: translateY(-20px);}
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        .btn-celebrate {
+            background: transparent;
+            border: 2px solid var(--pink);
+            color: white;
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+        }
+
+        .btn-celebrate:hover {
+            background: var(--pink);
+            box-shadow: 0 0 20px var(--pink);
+        }
     </style>
 </head>
 <body>
 
     <div id="gift-stage" onclick="openSurprise()">
-        <p style="color: #ff7597; font-weight: bold; letter-spacing: 2px;">TAP TO OPEN YOUR GIFT</p>
+        <p style="color: var(--pink); font-weight: bold; letter-spacing: 3px; margin-bottom: 30px;">TAP YOUR GIFT</p>
         <div class="box"></div>
     </div>
 
     <div id="main-content">
         <h1>HAPPY BIRTHDAY!</h1>
         <div class="sweetheart-line">Happy Birthday, Sweetheart ❤️</div>
-        <p>You make every day brighter.</p>
-        <button class="btn-celebrate" onclick="playBirthdayMelody()">REPLAY SONG 🎵</button>
+        <p style="letter-spacing: 1px; opacity: 0.9;">You deserve all the magic in the world.</p>
+        <button class="btn-celebrate" onclick="partyMode()">MORE MAGIC ✨</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
         const notes = [
-            {f: 261.63, d: 0.4}, {f: 261.63, d: 0.2}, {f: 293.66, d: 0.6}, {f: 261.63, d: 0.6}, {f: 349.23, d: 0.6}, {f: 329.63, d: 1.2},
-            {f: 261.63, d: 0.4}, {f: 261.63, d: 0.2}, {f: 293.66, d: 0.6}, {f: 261.63, d: 0.6}, {f: 392.00, d: 0.6}, {f: 349.23, d: 1.2},
-            {f: 261.63, d: 0.4}, {f: 261.63, d: 0.2}, {f: 523.25, d: 0.6}, {f: 440.00, d: 0.6}, {f: 349.23, d: 0.4}, {f: 329.63, d: 0.4}, {f: 293.66, d: 0.6},
-            {f: 466.16, d: 0.4}, {f: 466.16, d: 0.2}, {f: 440.00, d: 0.6}, {f: 349.23, d: 0.6}, {f: 392.00, d: 0.6}, {f: 349.23, d: 1.2}
+            {f: 261.6, d: 0.4}, {f: 261.6, d: 0.2}, {f: 293.7, d: 0.6}, {f: 261.6, d: 0.6}, {f: 349.2, d: 0.6}, {f: 329.6, d: 1.2},
+            {f: 261.6, d: 0.4}, {f: 261.6, d: 0.2}, {f: 293.7, d: 0.6}, {f: 261.6, d: 0.6}, {f: 392.0, d: 0.6}, {f: 349.2, d: 1.2},
+            {f: 261.6, d: 0.4}, {f: 261.6, d: 0.2}, {f: 523.3, d: 0.6}, {f: 440.0, d: 0.6}, {f: 349.2, d: 0.4}, {f: 329.6, d: 0.4}, {f: 293.7, d: 0.6},
+            {f: 466.2, d: 0.4}, {f: 466.2, d: 0.2}, {f: 440.0, d: 0.6}, {f: 349.2, d: 0.6}, {f: 392.0, d: 0.6}, {f: 349.2, d: 1.2}
         ];
 
-        function playNote(freq, duration, startTime, audioCtx) {
+        function playNote(freq, duration, startTime) {
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
-            osc.type = 'triangle'; // Softer, more "music-like" sound than 'sine'
-            osc.frequency.value = freq;
-            gain.gain.setValueAtTime(0.1, startTime);
+            osc.type = 'sine'; 
+            osc.frequency.setValueAtTime(freq, startTime);
+            gain.gain.setValueAtTime(0.2, startTime);
             gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
             osc.connect(gain);
             gain.connect(audioCtx.destination);
@@ -52,21 +158,39 @@
             osc.stop(startTime + duration);
         }
 
-        function playBirthdayMelody() {
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playMusic() {
             let time = audioCtx.currentTime;
-            notes.forEach(note => {
-                playNote(note.f, note.d, time, audioCtx);
-                time += note.d;
+            notes.forEach(n => {
+                playNote(n.f, n.d, time);
+                time += n.d;
             });
         }
 
+        function spawnHeart() {
+            const heart = document.createElement('div');
+            heart.innerHTML = '❤️';
+            heart.className = 'heart-float';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.bottom = '-5vh';
+            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 4000);
+        }
+
+        function partyMode() {
+            playMusic();
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff75a0', '#ffd700', '#ffffff']
+            });
+            for(let i=0; i<15; i++) setTimeout(spawnHeart, i*100);
+        }
+
         function openSurprise() {
-            playBirthdayMelody();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
             document.getElementById('gift-stage').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
-            confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 }, colors: ['#ff7597', '#ffd700', '#ffffff'] });
-        }
-    </script>
-</body>
-</html>
+            partyMode();
+            setInterval(spawnHeart, 1
