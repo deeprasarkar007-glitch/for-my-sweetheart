@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For My Sweetheart</title>
     <style>
-        /* This section makes it look beautiful */
         body {
             margin: 0;
-            background: #1a1a2e; /* Dark elegant background */
+            background: #1a1a2e;
             color: white;
             font-family: 'Arial', sans-serif;
             display: flex;
@@ -19,14 +18,10 @@
             overflow: hidden;
         }
 
-        #gift-stage {
-            cursor: pointer;
-            z-index: 10;
-        }
+        #gift-stage { cursor: pointer; z-index: 10; }
 
         .box {
-            width: 150px;
-            height: 150px;
+            width: 140px; height: 140px;
             background: #ff7597;
             margin: 20px auto;
             border-radius: 10px;
@@ -35,43 +30,28 @@
             animation: bounce 1.5s infinite;
         }
 
-        /* The Gold Ribbon */
         .box::after {
-            content: '';
-            position: absolute;
-            width: 25px;
-            height: 100%;
-            background: #ffd700;
-            left: 50%;
+            content: ''; position: absolute;
+            width: 25px; height: 100%;
+            background: #ffd700; left: 50%;
             transform: translateX(-50%);
         }
 
-        #main-content {
-            display: none; /* Hidden until clicked */
-        }
+        #main-content { display: none; }
 
         h1 {
-            font-size: 3.5rem;
+            font-size: 3rem;
             color: #ff7597;
             text-shadow: 0 0 15px rgba(255, 117, 151, 0.8);
-            margin: 0;
+            margin: 10px 0;
         }
 
-        .sweetheart-line {
-            font-size: 1.8rem;
-            margin: 20px 0;
-            font-style: italic;
-        }
+        .sweetheart-line { font-size: 1.6rem; margin: 15px 0; font-style: italic; }
 
         .btn-celebrate {
-            background: #ff7597;
-            border: none;
-            color: white;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            background: #ff7597; border: none; color: white;
+            padding: 12px 25px; border-radius: 50px;
+            font-size: 1rem; cursor: pointer; margin-top: 10px;
         }
 
         @keyframes bounce {
@@ -82,7 +62,9 @@
 </head>
 <body>
 
-    <div id="youtube-player" style="position:absolute; top:-999px;"></div>
+    <audio id="bday-audio">
+        <source src="https://www.chosic.com/wp-content/uploads/2021/04/Happy-Birthday-To-You-Standard-Instrumental.mp3" type="audio/mpeg">
+    </audio>
 
     <div id="gift-stage" onclick="openSurprise()">
         <p style="color: #ff7597; font-weight: bold; letter-spacing: 2px;">TAP TO OPEN YOUR GIFT</p>
@@ -93,44 +75,36 @@
         <h1>HAPPY BIRTHDAY!</h1>
         <div class="sweetheart-line">Happy Birthday, Sweetheart ❤️</div>
         <p>You make every day feel like a celebration.</p>
-        <button class="btn-celebrate" onclick="extraConfetti()">TAP FOR MAGIC ✨</button>
+        <button class="btn-celebrate" onclick="extraConfetti()">TAP FOR MORE MAGIC ✨</button>
+        <p id="audio-status" style="font-size: 0.8rem; margin-top: 20px; opacity: 0.5; cursor: pointer;" onclick="forcePlay()">Music not playing? Click here!</p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script>
-        // Load YouTube API for Music
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-        var player;
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('youtube-player', {
-                height: '0', width: '0',
-                videoId: '9K_v5V8zH_M', // Happy Birthday Music
-                playerVars: { 'autoplay': 0, 'controls': 0 }
-            });
-        }
-
         function openSurprise() {
-            // 1. Play Music
-            if (player && player.playVideo) {
-                player.playVideo();
-            }
+            const audio = document.getElementById('bday-audio');
+            
+            // Try to play immediately
+            audio.play().catch(error => {
+                console.log("Autoplay prevented. User needs to click again.");
+                document.getElementById('audio-status').innerHTML = "Click here to start the music! 🎵";
+            });
 
-            // 2. Change View
             document.getElementById('gift-stage').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
-            document.body.style.background = "#2d132c"; // Change to romantic purple
 
-            // 3. Explosion!
             confetti({
                 particleCount: 200,
-                spread: 90,
+                spread: 100,
                 origin: { y: 0.6 },
                 colors: ['#ff7597', '#ffd700', '#ffffff']
             });
+        }
+
+        function forcePlay() {
+            const audio = document.getElementById('bday-audio');
+            audio.play();
+            document.getElementById('audio-status').style.display = 'none';
         }
 
         function extraConfetti() {
