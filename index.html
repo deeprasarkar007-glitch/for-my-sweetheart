@@ -1,22 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Sweetheart</title>
+    <style>
+        /* This section makes it look beautiful */
+        body {
+            margin: 0;
+            background: #1a1a2e; /* Dark elegant background */
+            color: white;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        #gift-stage {
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .box {
+            width: 150px;
+            height: 150px;
+            background: #ff7597;
+            margin: 20px auto;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 0 30px rgba(255, 117, 151, 0.5);
+            animation: bounce 1.5s infinite;
+        }
+
+        /* The Gold Ribbon */
+        .box::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 100%;
+            background: #ffd700;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #main-content {
+            display: none; /* Hidden until clicked */
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            color: #ff7597;
+            text-shadow: 0 0 15px rgba(255, 117, 151, 0.8);
+            margin: 0;
+        }
+
+        .sweetheart-line {
+            font-size: 1.8rem;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        .btn-celebrate {
+            background: #ff7597;
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
 <body>
 
-    <div id="player" style="position:absolute; top:-9999px; left:-9999px;"></div>
+    <div id="youtube-player" style="position:absolute; top:-999px;"></div>
 
     <div id="gift-stage" onclick="openSurprise()">
+        <p style="color: #ff7597; font-weight: bold; letter-spacing: 2px;">TAP TO OPEN YOUR GIFT</p>
         <div class="box"></div>
-        <p style="letter-spacing: 2px; color: #ff75a0;">TAP TO OPEN YOUR GIFT</p>
     </div>
 
     <div id="main-content">
         <h1>HAPPY BIRTHDAY!</h1>
-        <div class="sweetheart-line">Happy Birthday, Sweetheart <span class="heart">❤️</span></div>
+        <div class="sweetheart-line">Happy Birthday, Sweetheart ❤️</div>
         <p>You make every day feel like a celebration.</p>
         <button class="btn-celebrate" onclick="extraConfetti()">TAP FOR MAGIC ✨</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script>
-        // Load YouTube API
+        // Load YouTube API for Music
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -24,40 +106,36 @@
 
         var player;
         function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                height: '0',
-                width: '0',
-                videoId: '9K_v5V8zH_M', // This is a soft Happy Birthday Lo-fi track
-                events: {
-                    'onReady': onPlayerReady
-                }
+            player = new YT.Player('youtube-player', {
+                height: '0', width: '0',
+                videoId: '9K_v5V8zH_M', // Happy Birthday Music
+                playerVars: { 'autoplay': 0, 'controls': 0 }
             });
         }
 
-        function onPlayerReady(event) {
-            // Player is ready but won't play until click
-        }
-
         function openSurprise() {
-            // Start YouTube Audio
+            // 1. Play Music
             if (player && player.playVideo) {
                 player.playVideo();
             }
 
+            // 2. Change View
             document.getElementById('gift-stage').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
-            
-            // Confetti Cannon
+            document.body.style.background = "#2d132c"; // Change to romantic purple
+
+            // 3. Explosion!
             confetti({
-                particleCount: 150,
-                spread: 70,
+                particleCount: 200,
+                spread: 90,
                 origin: { y: 0.6 },
-                colors: ['#ff75a0', '#ffd700', '#ffffff']
+                colors: ['#ff7597', '#ffd700', '#ffffff']
             });
         }
 
         function extraConfetti() {
-            confetti({ particleCount: 80, spread: 100, origin: { y: 0.6 } });
+            confetti({ particleCount: 100, spread: 120 });
         }
     </script>
 </body>
+</html>
